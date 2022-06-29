@@ -1,7 +1,7 @@
 # LeNet
 LeCun, Y., Bottou, L., Bengio, Y., Haffner, P., & others. (1998). Gradient-based learning applied to document recognition. Proceedings of the IEEE, 86(11), 2278–2324.
 
-## Innovation
+## Achievements
 - Convolutional layer
 - Pooling layer
 
@@ -30,6 +30,3 @@ Sigmoid output shape:        torch.Size([batch_size, 120])
 Linear output shape:         torch.Size([batch_size, 84])
 Sigmoid output shape:        torch.Size([batch_size, 84])
 Linear output shape:         torch.Size([batch_size, num_label])
-
-## Optimizer
-Stochastic gradient descent

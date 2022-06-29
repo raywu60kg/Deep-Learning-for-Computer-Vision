@@ -1,7 +1,7 @@
 # NiN
 Lin, M., Chen, Q., & Yan, S. (2013). Network in network. arXiv preprint arXiv:1312.4400.
 
-## Innovation
+## Achievements
 - NiN block
 - Global average pooling layer
 - No fully connected layer
@@ -33,5 +33,3 @@ Sequential output shape:     torch.Size([batch_size, 10, 5, 5])
 AdaptiveAvgPool2d output shape:      torch.Size([batch_size, 10, 1, 1])
 Flatten output shape:        torch.Size([batch_size, num_label])
 
-## Optimizer
-Stochastic gradient descent

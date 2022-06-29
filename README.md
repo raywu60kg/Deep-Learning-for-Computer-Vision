@@ -27,3 +27,4 @@
 - [cs231n](https://cs231n.github.io/convolutional-networks/)
 - [pytorch tutorials](https://pytorch.org/tutorials/)
 - [Dive into Deep Learning](https://d2l.ai/)
+- [lilianweng blog](https://lilianweng.github.io/posts/2017-12-31-object-recognition-part-3/)
