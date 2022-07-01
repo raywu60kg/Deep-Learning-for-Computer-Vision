@@ -6,6 +6,7 @@ LeCun, Y., Bottou, L., Bengio, Y., Haffner, P., & others. (1998). Gradient-based
 - Pooling layer
 
 ## Model structure
+
 ```python
 net = nn.Sequential(
     nn.Conv2d(1, 6, kernel_size=5, padding=2), nn.Sigmoid(),

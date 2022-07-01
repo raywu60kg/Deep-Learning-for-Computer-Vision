@@ -1,3 +1,0 @@
-# EfficientNet
-
-## Achievements
