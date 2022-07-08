@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 from src.dataloader.dataloader import GetFashionMnist
-from src.models.leNet import LeNet
+from src.models.lenet import LeNet
 from src.training.training import SimpleTraining
 
 

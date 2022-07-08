@@ -27,7 +27,6 @@ net = nn.Sequential(
     nn.Dropout(p=0.5),
     nn.Linear(4096, num_label))
 ```
-
 ## Layer shapes
 Conv2d output shape:         torch.Size([batch_size, 96, 54, 54])
 ReLU output shape:   torch.Size([batch_size, 96, 54, 54])
@@ -51,5 +50,5 @@ ReLU output shape:   torch.Size([batch_size, 4096])
 Dropout output shape:        torch.Size([batch_size, 4096])
 Linear output shape:         torch.Size([batch_size, num_label])
 
-## Optimizer
-Stochastic gradient descent
+## input image
+3 * 224 * 224
