@@ -1,9 +1,10 @@
 import torch
 import torch.nn as nn
 from src.dataloader.dataloader import GetFashionMnist
-from src.models.lenet import LeNet
+from src.models.cnn import LeNet, AlexNet, VGG
 from src.training.training import SimpleTraining
 
+model_name = "LeNet"
 
 def main():
     epochs = 3
@@ -14,7 +15,10 @@ def main():
     training_data_loader = data_loader.get_training_data(batch_size=batch_size)
     testing_data_loader = data_loader.get_testing_data(batch_size=batch_size)
     training_method = SimpleTraining()
-    model = LeNet(input_shape=(1, 28, 28), num_label=10).to(device)
+    if model_name == "LeNet":
+        model = LeNet(input_shape=(1, 28, 28), num_label=10).to(device)
+    elif model_name == "AlexNet":
+        model =  None
     print(model)
     loss_fn = nn.CrossEntropyLoss()
     optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
