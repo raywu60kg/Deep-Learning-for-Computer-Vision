@@ -17,7 +17,7 @@ class GetFashionMnist(GetData):
     image shape: (1,28,28)
     """
     def get_training_data(self, batch_size:int, resize: Union[None,Annotated[Tuple[int], 3]]=None):
-        if resize is not None:
+        if resize is None:
             return DataLoader(
                 datasets.FashionMNIST(
                     root="data", train=True, download=True, transform=ToTensor()

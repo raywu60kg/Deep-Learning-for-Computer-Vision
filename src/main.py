@@ -1,8 +1,8 @@
 import torch
 import torch.nn as nn
-from src.dataloader.dataloader import GetFashionMnist
-from src.models.cnn import LeNet, AlexNet, VGG
-from src.training.training import SimpleTraining
+from dataloader.dataloader import GetFashionMnist
+from models.cnn import LeNet, AlexNet, VGG
+from training.training import SimpleTraining
 
 model_name = "LeNet"
 
