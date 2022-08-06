@@ -16,7 +16,7 @@ class GetFashionMnist(GetData):
     """
     image shape: (1,28,28)
     """
-    def get_training_data(self, batch_size:int, resize: Union[None,Annotated[Tuple[int], 3]]=None):
+    def get_training_data(self, batch_size:int, resize: Union[None,Annotated[Tuple[int], 3]]=None) ->DataLoader:
         if resize is None:
             return DataLoader(
                 datasets.FashionMNIST(
@@ -33,14 +33,21 @@ class GetFashionMnist(GetData):
             )
 
 
-    def get_testing_data(self, batch_size):
-
-        return DataLoader(
-            datasets.FashionMNIST(
-                root="data", train=False, download=True, transform=ToTensor()
-            ),
-            batch_size=batch_size,
-        )
+    def get_testing_data(self, batch_size:int, resize: Union[None,Annotated[Tuple[int], 3]]=None)->DataLoader:
+        if resize is None:
+            return DataLoader(
+                datasets.FashionMNIST(
+                    root="data", train=False, download=True, transform=ToTensor()
+                ),
+                batch_size=batch_size,
+            )
+        else:
+            return DataLoader(
+                datasets.FashionMNIST(
+                    root="data", train=False, download=True, transform=Compose([Resize(resize),ToTensor()
+                ])),
+                batch_size=batch_size,
+            )
 
 class GetCifar10(GetData):
     """

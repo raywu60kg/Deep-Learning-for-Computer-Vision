@@ -8,6 +8,13 @@ Lin, M., Chen, Q., & Yan, S. (2013). Network in network. arXiv preprint arXiv:13
 
 ## Model structure
 ```python
+def nin_block(in_channels, out_channels, kernel_size, strides, padding):
+    return nn.Sequential(
+        nn.Conv2d(in_channels, out_channels, kernel_size, strides, padding),
+        nn.ReLU(),
+        nn.Conv2d(out_channels, out_channels, kernel_size=1), nn.ReLU(),
+        nn.Conv2d(out_channels, out_channels, kernel_size=1), nn.ReLU())
+
 net = nn.Sequential(
     nin_block(1, 96, kernel_size=11, strides=4, padding=0),
     nn.MaxPool2d(3, stride=2),

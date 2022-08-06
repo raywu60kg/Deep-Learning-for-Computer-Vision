@@ -13,6 +13,7 @@ class TestDataLoader(unittest.TestCase):
             break
         # print(training_data_loader[0])
         assert X.size() == torch.Size([1, 1, 28, 28])
+        assert 1 == 2
     
     def test_fashion_mnist_resize(self) -> None:
         get_data = GetFashionMnist()

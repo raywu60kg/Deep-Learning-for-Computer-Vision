@@ -135,3 +135,11 @@ class VGG(nn.Module):
             in_channels = out_channels
         layers.append(nn.MaxPool2d(kernel_size=2, stride=2))
         return nn.Sequential(*layers)
+
+class NiN(nn.Module):
+    def __init__(self, input_shape: Annotated[Tuple[int], 3], num_label: int) -> None:
+        super(VGG, self).__init__()
+        channel = input_shape[0]
+    
+    def get_nin_black(self):
+        pass
