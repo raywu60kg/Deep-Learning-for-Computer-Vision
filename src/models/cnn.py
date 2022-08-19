@@ -82,10 +82,10 @@ class AlexNet(nn.Module):
         x = torch.flatten(x, 1)
         x = self.fc1(x)
         x = torch.relu(x)
-        x = torch.dropout(x,p=0.5,train=True)
+        x = torch.dropout(x, p=0.5, train=True)
         x = self.fc2(x)
         x = torch.relu(x)
-        x = torch.dropout(x,p=0.5,train=True)
+        x = torch.dropout(x, p=0.5, train=True)
         x = self.fc3(x)
         return x
 
@@ -118,10 +118,10 @@ class VGG(nn.Module):
         x = torch.flatten(x, 1)
         x = self.fc1(x)
         x = torch.relu(x)
-        x = torch.dropout(x,p=0.5,train=True)
+        x = torch.dropout(x, p=0.5, train=True)
         x = self.fc2(x)
         x = torch.relu(x)
-        x = torch.dropout(x,p=0.5,train=True)
+        x = torch.dropout(x, p=0.5, train=True)
         x = self.fc3(x)
         return x
 
@@ -136,10 +136,20 @@ class VGG(nn.Module):
         layers.append(nn.MaxPool2d(kernel_size=2, stride=2))
         return nn.Sequential(*layers)
 
+
 class NiN(nn.Module):
     def __init__(self, input_shape: Annotated[Tuple[int], 3], num_label: int) -> None:
         super(VGG, self).__init__()
         channel = input_shape[0]
-    
-    def get_nin_black(self):
+    def forward(self):
         pass
+    def get_nin_block(self, in_channels:int, out_channels:int, kernel_size:int, strides: int, padding: int)-> nn.Sequential:
+        return nn.Sequential(
+            nn.Conv2d(in_channels, out_channels, kernel_size, strides, padding),
+            nn.ReLU(),
+            nn.Conv2d(out_channels, out_channels, kernel_size=1),
+            nn.ReLU(),
+            nn.Conv2d(out_channels, out_channels, kernel_size=1),
+            nn.ReLU(),
+        )
+
