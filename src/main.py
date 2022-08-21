@@ -1,10 +1,10 @@
 import torch
 import torch.nn as nn
 from dataloader.dataloader import GetFashionMnist
-from models.cnn import LeNet, AlexNet, VGG
+from models.cnn import LeNet, AlexNet, VGG, NiN
 from training.training import SimpleTraining
 
-model_name = "VGG"
+model_name = "NiN"
 
 
 def main():
@@ -26,6 +26,8 @@ def main():
         model = AlexNet(input_shape=(1, 224, 224), num_label=10).to(device)
     elif model_name == "VGG":
         model = VGG(input_shape=(1, 224, 224), num_label=10).to(device)
+    elif model_name == "NiN":
+        model = NiN(input_shape=(1, 224, 224), num_label=10).to(device)
     loss_fn = nn.CrossEntropyLoss()
     optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
 

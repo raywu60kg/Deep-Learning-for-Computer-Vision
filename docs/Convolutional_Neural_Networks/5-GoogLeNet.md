@@ -4,7 +4,6 @@ LeCun, Y., Bottou, L., Bengio, Y., Haffner, P., & others. (1998). Gradient-based
 ## Achievements
 - Inception Block 
     - Contain different kind of filter and concate them together.
-- Pooling layer
 
 ## Model structure
 ```python
@@ -68,5 +67,3 @@ b4 output shape:     torch.Size([batch_size, 832, 3, 3])
 b5 output shape:     torch.Size([batch_size, 1024])
 Linear output shape:         torch.Size([batch_size, num_label])
 
-## Optimizer
-Stochastic gradient descent

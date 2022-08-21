@@ -23,7 +23,6 @@ net = nn.Sequential(
     nin_block(256, 384, kernel_size=3, strides=1, padding=1),
     nn.MaxPool2d(3, stride=2),
     nn.Dropout(0.5),
-  
     nin_block(384, num_label, kernel_size=3, strides=1, padding=1),
     nn.AdaptiveAvgPool2d((1, 1)),
     nn.Flatten())
