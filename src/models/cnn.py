@@ -1,6 +1,4 @@
-from turtle import forward
 from typing import Tuple, Annotated
-from numpy import pad
 import torch
 import torch.nn as nn
 
@@ -12,9 +10,7 @@ class LeNet(nn.Module):
         # height = input_shape[1]
         # width = input_shape[2]
 
-        self.conv1 = nn.Conv2d(
-            in_channels=channel, out_channels=6, kernel_size=5, padding=2
-        )
+        self.conv1 = nn.Conv2d(in_channels=channel, out_channels=6, kernel_size=5, padding=2)
         self.avg_pool1 = nn.AvgPool2d(kernel_size=2, stride=2)
         self.conv2 = nn.Conv2d(in_channels=6, out_channels=16, kernel_size=5, padding=0)
         self.avg_pool2 = nn.AvgPool2d(kernel_size=2, stride=2)
@@ -46,22 +42,18 @@ class AlexNet(nn.Module):
         # width = input_shape[2]
 
         self.conv1 = nn.Conv2d(
-            in_channels=channel, out_channels=96, kernel_size=11, stride=4, padding=1
+            in_channels=channel,
+            out_channels=96,
+            kernel_size=11,
+            stride=4,
+            padding=1,
         )
         self.max_pool1 = nn.MaxPool2d(kernel_size=3, stride=2)
-        self.conv2 = nn.Conv2d(
-            in_channels=96, out_channels=256, kernel_size=5, padding=2
-        )
+        self.conv2 = nn.Conv2d(in_channels=96, out_channels=256, kernel_size=5, padding=2)
         self.max_pool2 = nn.MaxPool2d(kernel_size=3, stride=2)
-        self.conv3 = nn.Conv2d(
-            in_channels=256, out_channels=384, kernel_size=3, padding=1
-        )
-        self.conv4 = nn.Conv2d(
-            in_channels=384, out_channels=384, kernel_size=3, padding=1
-        )
-        self.conv5 = nn.Conv2d(
-            in_channels=384, out_channels=256, kernel_size=3, padding=1
-        )
+        self.conv3 = nn.Conv2d(in_channels=256, out_channels=384, kernel_size=3, padding=1)
+        self.conv4 = nn.Conv2d(in_channels=384, out_channels=384, kernel_size=3, padding=1)
+        self.conv5 = nn.Conv2d(in_channels=384, out_channels=256, kernel_size=3, padding=1)
         self.max_pool3 = nn.MaxPool2d(kernel_size=3, stride=2)
         self.fc1 = nn.LazyLinear(4096)
         self.fc2 = nn.Linear(4096, 4096)
@@ -130,9 +122,7 @@ class VGG(nn.Module):
     def get_vgg_block(self, num_convs, in_channels, out_channels):
         layers = []
         for _ in range(num_convs):
-            layers.append(
-                nn.Conv2d(in_channels, out_channels, kernel_size=3, padding=1)
-            )
+            layers.append(nn.Conv2d(in_channels, out_channels, kernel_size=3, padding=1))
             layers.append(nn.ReLU())
             in_channels = out_channels
         layers.append(nn.MaxPool2d(kernel_size=2, stride=2))
@@ -144,19 +134,35 @@ class NiN(nn.Module):
         super(NiN, self).__init__()
         channel = input_shape[0]
         self.nin_feature_block1 = self.get_nin_block(
-            in_channels=channel, out_channels=96, kernel_size=11, strides=4, padding=0
+            in_channels=channel,
+            out_channels=96,
+            kernel_size=11,
+            strides=4,
+            padding=0,
         )
         self.max_pool1 = nn.MaxPool2d(kernel_size=3, stride=2)
         self.nin_feature_block2 = self.get_nin_block(
-            in_channels=96, out_channels=256, kernel_size=5, strides=1, padding=2
+            in_channels=96,
+            out_channels=256,
+            kernel_size=5,
+            strides=1,
+            padding=2,
         )
         self.max_pool2 = nn.MaxPool2d(kernel_size=3, stride=2)
         self.nin_feature_block3 = self.get_nin_block(
-            in_channels=256, out_channels=384, kernel_size=5, strides=1, padding=2
+            in_channels=256,
+            out_channels=384,
+            kernel_size=5,
+            strides=1,
+            padding=2,
         )
         self.max_pool3 = nn.MaxPool2d(kernel_size=3, stride=2)
         self.nin_fc_block = self.get_nin_block(
-            in_channels=384, out_channels=num_label, kernel_size=3, strides=1, padding=1
+            in_channels=384,
+            out_channels=num_label,
+            kernel_size=3,
+            strides=1,
+            padding=1,
         )
         self.max_pool1 = nn.MaxPool2d(kernel_size=3, stride=2)
         self.avg_pool = nn.AdaptiveAvgPool2d((1, 1))
@@ -205,14 +211,10 @@ class InceptionBlock(nn.Module):
         self.p1_1 = nn.Conv2d(in_channels, out_channels1, kernel_size=1)
 
         self.p2_1 = nn.Conv2d(in_channels, out_channels2[0], kernel_size=1)
-        self.p2_2 = nn.Conv2d(
-            out_channels2[0], out_channels2[1], kernel_size=3, padding=1
-        )
+        self.p2_2 = nn.Conv2d(out_channels2[0], out_channels2[1], kernel_size=3, padding=1)
 
         self.p3_1 = nn.Conv2d(in_channels, out_channels3[0], kernel_size=1)
-        self.p3_2 = nn.Conv2d(
-            out_channels3[0], out_channels3[1], kernel_size=5, padding=2
-        )
+        self.p3_2 = nn.Conv2d(out_channels3[0], out_channels3[1], kernel_size=5, padding=2)
 
         self.p4_1 = nn.MaxPool2d(kernel_size=3, stride=1, padding=1)
         self.p4_2 = nn.Conv2d(in_channels, out_channels4, kernel_size=1)
@@ -276,13 +278,15 @@ class ResidualBlock(nn.Module):
     def __init__(self, input_channels, num_channels, use_1x1conv=False, strides=1):
         super().__init__()
         self.conv1 = nn.Conv2d(
-            input_channels, num_channels, kernel_size=3, padding=1, stride=strides
+            input_channels,
+            num_channels,
+            kernel_size=3,
+            padding=1,
+            stride=strides,
         )
         self.conv2 = nn.Conv2d(num_channels, num_channels, kernel_size=3, padding=1)
         if use_1x1conv:
-            self.conv3 = nn.Conv2d(
-                input_channels, num_channels, kernel_size=1, stride=strides
-            )
+            self.conv3 = nn.Conv2d(input_channels, num_channels, kernel_size=1, stride=strides)
         else:
             self.conv3 = None
         self.bn1 = nn.BatchNorm2d(num_channels)
@@ -353,16 +357,121 @@ class ResNet(nn.Module):
         return x
 
     def get_resnet_block(
-        self, input_channels, num_channels, num_residuals, use_1x1conv_on_first_block
+        self,
+        input_channels,
+        num_channels,
+        num_residuals,
+        use_1x1conv_on_first_block,
     ):
         blk = []
         for i in range(num_residuals):
             if i == 0 and use_1x1conv_on_first_block:
                 blk.append(
                     ResidualBlock(
-                        input_channels, num_channels, use_1x1conv=True, strides=2
+                        input_channels,
+                        num_channels,
+                        use_1x1conv=True,
+                        strides=2,
                     )
                 )
             else:
                 blk.append(ResidualBlock(num_channels, num_channels))
         return blk
+
+    class DenseBlock(nn.Module):
+        def __init__(self, num_convs, input_channels, num_channels):
+            super().__init__()
+            layer = []
+            for i in range(num_convs):
+                layer.append(self.conv_block(num_channels * i + input_channels, num_channels))
+            self.net = nn.Sequential(*layer)
+
+        def conv_block(self, input_channels, num_channels):
+            return nn.Sequential(
+                nn.BatchNorm2d(input_channels),
+                nn.ReLU(),
+                nn.Conv2d(input_channels, num_channels, kernel_size=3, padding=1),
+            )
+
+        def forward(self, X):
+            for blk in self.net:
+                Y = blk(X)
+                X = torch.cat((X, Y), dim=1)
+            return X
+
+    class DenseNet(nn.Module):
+        def __init__(self, input_shape: Annotated[Tuple[int], 3], num_label: int) -> None:
+            super().__init__()
+            channel = input_shape[0]
+            self.b1 = nn.Sequential(
+                nn.Conv2d(channel, 64, kernel_size=7, stride=2, padding=3),
+                nn.BatchNorm2d(64),
+                nn.ReLU(),
+                nn.MaxPool2d(kernel_size=3, stride=2, padding=1),
+            )
+            self.b2 = nn.Sequential(
+                *self.get_resnet_block(
+                    input_channels=64,
+                    num_channels=64,
+                    num_residuals=2,
+                    use_1x1conv_on_first_block=False,
+                )
+            )
+            self.b3 = nn.Sequential(
+                *self.get_resnet_block(
+                    input_channels=64,
+                    num_channels=128,
+                    num_residuals=2,
+                    use_1x1conv_on_first_block=True,
+                )
+            )
+            self.b4 = nn.Sequential(
+                *self.get_resnet_block(
+                    input_channels=128,
+                    num_channels=256,
+                    num_residuals=2,
+                    use_1x1conv_on_first_block=True,
+                )
+            )
+            self.b5 = nn.Sequential(
+                *self.get_resnet_block(
+                    input_channels=256,
+                    num_channels=512,
+                    num_residuals=2,
+                    use_1x1conv_on_first_block=True,
+                )
+            )
+            self.fc = nn.Linear(512, num_label)
+
+        def forward(self, x):
+            x = self.b1(x)
+            x = self.b2(x)
+            x = self.b3(x)
+            x = self.b4(x)
+            x = self.b5(x)
+            x = torch._adaptive_avg_pool2d(x, (1, 1))
+            x = torch.flatten(x, 1)
+            x = self.fc(x)
+            return x
+
+        def get_resnet_block(
+            self,
+            input_channels,
+            num_channels,
+            num_residuals,
+            use_1x1conv_on_first_block,
+        ):
+            blk = []
+            for i in range(num_residuals):
+                if i == 0 and use_1x1conv_on_first_block:
+                    blk.append(
+                        ResidualBlock(
+                            input_channels,
+                            num_channels,
+                            use_1x1conv=True,
+                            strides=2,
+                        )
+                    )
+                else:
+                    blk.append(ResidualBlock(num_channels, num_channels))
+            return blk

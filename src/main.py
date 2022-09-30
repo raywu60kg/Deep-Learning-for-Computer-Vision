@@ -13,12 +13,8 @@ def main():
     batch_size = 32
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     data_loader = GetFashionMnist()
-    training_data_loader = data_loader.get_training_data(
-        batch_size=batch_size, resize=(224, 224)
-    )
-    testing_data_loader = data_loader.get_testing_data(
-        batch_size=batch_size, resize=(224, 224)
-    )
+    training_data_loader = data_loader.get_training_data(batch_size=batch_size, resize=(224, 224))
+    testing_data_loader = data_loader.get_testing_data(batch_size=batch_size, resize=(224, 224))
     training_method = SimpleTraining()
     if model_name == "LeNet":
         model = LeNet(input_shape=(1, 28, 28), num_label=10).to(device)
