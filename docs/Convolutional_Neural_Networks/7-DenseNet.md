@@ -18,6 +18,21 @@ def transition_block(input_channels, num_channels):
         nn.Conv2d(input_channels, num_channels, kernel_size=1),
         nn.AvgPool2d(kernel_size=2, stride=2))
 
+class DenseBlock(nn.Module):
+    def __init__(self, num_convs, input_channels, num_channels):
+        super(DenseBlock, self).__init__()
+        layer = []
+        for i in range(num_convs):
+            layer.append(conv_block(
+                num_channels * i + input_channels, num_channels))
+        self.net = nn.Sequential(*layer)
+
+    def forward(self, X):
+        for blk in self.net:
+            Y = blk(X)
+            X = torch.cat((X, Y), dim=1)
+        return X
+
 b1 = nn.Sequential(
     nn.Conv2d(1, 64, kernel_size=7, stride=2, padding=3),
     nn.BatchNorm2d(64), nn.ReLU(),
@@ -34,20 +49,10 @@ for i, num_convs in enumerate(num_convs_in_dense_blocks):
         blks.append(transition_block(num_channels, num_channels // 2))
         num_channels = num_channels // 2
 
+net = nn.Sequential(
+    b1, *blks,
+    nn.BatchNorm2d(num_channels), nn.ReLU(),
+    nn.AdaptiveAvgPool2d((1, 1)),
+    nn.Flatten(),
+    nn.Linear(num_channels, 10))
 ```
-## Layer shapes
-Conv2d output shape:         torch.Size([batch_size, 6, 28, 28])
-Sigmoid output shape:        torch.Size([batch_size, 6, 28, 28])
-AvgPool2d output shape:      torch.Size([batch_size, 6, 14, 14])
-Conv2d output shape:         torch.Size([batch_size, 16, 10, 10])
-Sigmoid output shape:        torch.Size([batch_size, 16, 10, 10])
-AvgPool2d output shape:      torch.Size([batch_size, 16, 5, 5])
-Flatten output shape:        torch.Size([batch_size, 400])
-Linear output shape:         torch.Size([batch_size, 120])
-Sigmoid output shape:        torch.Size([batch_size, 120])
-Linear output shape:         torch.Size([batch_size, 84])
-Sigmoid output shape:        torch.Size([batch_size, 84])
-Linear output shape:         torch.Size([batch_size, num_label])
-
-## Optimizer
-Stochastic gradient descent

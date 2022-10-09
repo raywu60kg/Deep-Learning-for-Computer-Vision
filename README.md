@@ -8,9 +8,10 @@
 - GooLeNet
 - ResNet
 - DenseNet
-- Efficientnet
+- MobileNet(TODO)
+- Efficientnet(TODO)
 
-### Object Detection
+### Object Detection (TODO)
 - R-CNNs
 - Fast R-CNN
 - Faster R-CNN

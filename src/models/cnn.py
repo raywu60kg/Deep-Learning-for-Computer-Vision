@@ -378,100 +378,69 @@ class ResNet(nn.Module):
                 blk.append(ResidualBlock(num_channels, num_channels))
         return blk
 
-    class DenseBlock(nn.Module):
-        def __init__(self, num_convs, input_channels, num_channels):
-            super().__init__()
-            layer = []
-            for i in range(num_convs):
-                layer.append(self.conv_block(num_channels * i + input_channels, num_channels))
-            self.net = nn.Sequential(*layer)
 
-        def conv_block(self, input_channels, num_channels):
-            return nn.Sequential(
-                nn.BatchNorm2d(input_channels),
-                nn.ReLU(),
-                nn.Conv2d(input_channels, num_channels, kernel_size=3, padding=1),
-            )
+class DenseBlock(nn.Module):
+    def __init__(self, num_convs, input_channels, num_channels):
+        super().__init__()
+        layer = []
+        for i in range(num_convs):
+            layer.append(self.conv_block(num_channels * i + input_channels, num_channels))
+        self.net = nn.Sequential(*layer)
 
-        def forward(self, X):
-            for blk in self.net:
-                Y = blk(X)
-                X = torch.cat((X, Y), dim=1)
-            return X
+    def conv_block(self, input_channels, num_channels):
+        return nn.Sequential(
+            nn.BatchNorm2d(input_channels),
+            nn.ReLU(),
+            nn.Conv2d(input_channels, num_channels, kernel_size=3, padding=1),
+        )
 
-    class DenseNet(nn.Module):
-        def __init__(self, input_shape: Annotated[Tuple[int], 3], num_label: int) -> None:
-            super().__init__()
-            channel = input_shape[0]
-            self.b1 = nn.Sequential(
-                nn.Conv2d(channel, 64, kernel_size=7, stride=2, padding=3),
-                nn.BatchNorm2d(64),
-                nn.ReLU(),
-                nn.MaxPool2d(kernel_size=3, stride=2, padding=1),
-            )
-            self.b2 = nn.Sequential(
-                *self.get_resnet_block(
-                    input_channels=64,
-                    num_channels=64,
-                    num_residuals=2,
-                    use_1x1conv_on_first_block=False,
-                )
-            )
-            self.b3 = nn.Sequential(
-                *self.get_resnet_block(
-                    input_channels=64,
-                    num_channels=128,
-                    num_residuals=2,
-                    use_1x1conv_on_first_block=True,
-                )
-            )
-            self.b4 = nn.Sequential(
-                *self.get_resnet_block(
-                    input_channels=128,
-                    num_channels=256,
-                    num_residuals=2,
-                    use_1x1conv_on_first_block=True,
-                )
-            )
-            self.b5 = nn.Sequential(
-                *self.get_resnet_block(
-                    input_channels=256,
-                    num_channels=512,
-                    num_residuals=2,
-                    use_1x1conv_on_first_block=True,
-                )
-            )
-            self.fc = nn.Linear(512, num_label)
+    def forward(self, X):
+        for blk in self.net:
+            Y = blk(X)
+            X = torch.cat((X, Y), dim=1)
+        return X
 
-        def forward(self, x):
-            x = self.b1(x)
-            x = self.b2(x)
-            x = self.b3(x)
-            x = self.b4(x)
-            x = self.b5(x)
-            x = torch._adaptive_avg_pool2d(x, (1, 1))
-            x = torch.flatten(x, 1)
-            x = self.fc(x)
-            return x
 
-        def get_resnet_block(
-            self,
-            input_channels,
-            num_channels,
-            num_residuals,
-            use_1x1conv_on_first_block,
-        ):
-            blk = []
-            for i in range(num_residuals):
-                if i == 0 and use_1x1conv_on_first_block:
-                    blk.append(
-                        ResidualBlock(
-                            input_channels,
-                            num_channels,
-                            use_1x1conv=True,
-                            strides=2,
-                        )
-                    )
-                else:
-                    blk.append(ResidualBlock(num_channels, num_channels))
-            return blk
+class DenseNet(nn.Module):
+    def __init__(self, input_shape: Annotated[Tuple[int], 3], num_label: int) -> None:
+        super().__init__()
+        channel = input_shape[0]
+        self.b1 = nn.Sequential(
+            nn.Conv2d(channel, 64, kernel_size=7, stride=2, padding=3),
+            nn.BatchNorm2d(64),
+            nn.ReLU(),
+            nn.MaxPool2d(kernel_size=3, stride=2, padding=1),
+        )
+
+        self.blks = []
+        num_channels, growth_rate = 64, 32
+        num_convs_in_dense_blocks = [4, 4, 4, 4]
+        for i, num_convs in enumerate(num_convs_in_dense_blocks):
+            self.blks.append(DenseBlock(num_convs, num_channels, growth_rate))
+            num_channels += num_convs * growth_rate
+
+            if i != len(num_convs_in_dense_blocks) - 1:
+                self.blks.append(self.transition_block(num_channels, num_channels // 2))
+                num_channels = num_channels // 2
+
+        self.bn = nn.BatchNorm2d(num_channels)
+        self.fc = nn.Linear(num_channels, num_label)
+
+    def forward(self, x):
+        x = self.b1(x)
+        for blk in self.blks:
+            x = blk(x)
+        x = self.bn(x)
+        x = torch.relu(x)
+        x = torch._adaptive_avg_pool2d(x, (1, 1))
+        x = torch.flatten(x, 1)
+        x = self.fc(x)
+        return x
+
+    def transition_block(self, input_channels: int, num_channels: int):
+        return nn.Sequential(
+            nn.BatchNorm2d(input_channels),
+            nn.ReLU(),
+            nn.Conv2d(input_channels, num_channels, kernel_size=1),
+            nn.AvgPool2d(kernel_size=2, stride=2),
+        )
